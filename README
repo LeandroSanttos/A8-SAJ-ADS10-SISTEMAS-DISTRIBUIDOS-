@@ -1,0 +1,58 @@
+README
+
+
+# Distributed Message Board (Python, asyncio)
+
+## Requisitos
+- Python 3.8+ (recomendo 3.10+)
+- Só depende da stdlib (asyncio, json)
+
+## Arquivos
+- node.py    -> servidor / nó
+- client.py  -> cliente interativo simples
+
+## Como executar (3 nós)
+Abra 3 terminais (ou abas) e rode:
+
+Terminal 1 (Node A):
+  python node.py --id A --port 8001 --peers 127.0.0.1:8002,127.0.0.1:8003
+
+Terminal 2 (Node B):
+  python node.py --id B --port 8002 --peers 127.0.0.1:8001,127.0.0.1:8003
+
+Terminal 3 (Node C):
+  python node.py --id C --port 8003 --peers 127.0.0.1:8001,127.0.0.1:8002
+
+Obs: a ordem de start não importa muito; os nós fazem tentativa de reconciliação ao start.
+
+## Usar o cliente
+Em outro terminal:
+  python client.py --port 8001
+Comandos:
+  login alice pass1
+  post Olá do nó A!
+  read
+
+Você pode conectar o cliente a qualquer nó (8001, 8002 ou 8003).
+
+## Simular queda temporária de um nó
+- Para simular "queda", simplesmente feche o terminal do nó (Ctrl+C).
+- Poste mensagens nos outros nós.
+- Reinicie o nó com o mesmo comando de antes:
+  python node.py --id A --port 8001 --peers 127.0.0.1:8002,127.0.0.1:8003
+
+Ao iniciar o nó novamente, ele executará a rotina reconcile_on_start() que:
+- pergunta aos peers quais mensagens estão faltando,
+- recebe e aplica as mensagens ausentes,
+- assim, consegue atingir consistência eventual.
+
+## Como demonstrar no relatório (sugestão)
+1. Inicie os três nós.
+2. Conecte cliente ao nó A, faça login alice.
+3. Poste M1 no A.
+4. Conecte cliente ao nó B e verifique que M1 aparece.
+5. Pare o nó C (Ctrl+C).
+6. Poste M2 e M3 em A e B.
+7. Reinicie o nó C.
+8. Observe logs do nó C mostrando que ele reconciliou as mensagens faltantes.
+
