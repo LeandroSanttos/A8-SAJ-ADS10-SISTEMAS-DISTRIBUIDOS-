@@ -1,17 +1,3 @@
-client.py
-
-
-#!/usr/bin/env python3
-"""
-client.py
-Uso:
-  python client.py --host 127.0.0.1 --port 8001
-Comandos interativos:
-  login <username> <password>
-  post <message text>
-  read
-  exit
-"""
 import asyncio
 import json
 import argparse
@@ -84,7 +70,7 @@ async def interactive(host, port):
             print("Unknown/invalid command")
     print("Client exiting.")
 
-if name == '__main__':
+if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--host', default='127.0.0.1')
     p.add_argument('--port', type=int, required=True)
